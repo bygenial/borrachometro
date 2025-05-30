@@ -39,9 +39,6 @@ export default function HomePage() {
     localStorage.setItem('borrachometro_prices', JSON.stringify(priceInputs));
   }, [priceInputs]);
   
-  const [priceInputs, setPriceInputs] = useState<
-    Record<(typeof types)[number], string>
-  >({ cerveza: "", copa: "", refresco: "" });=
   // Estados para contar y precios
   const [counts, setCounts] = useState<Record<typeof types[number], number>>({ cerveza:0, copa:0, refresco:0, vino:0 });
   const [priceInputs, setPriceInputs] = useState<Record<typeof types[number], string>>({ cerveza:'', copa:'', refresco:'', vino:'' });
