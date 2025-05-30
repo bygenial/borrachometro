@@ -79,12 +79,27 @@ export default function HomePage() {
     const num = parseFloat(priceInputs[t].replace(',', '.')) || 0;
     return s + counts[t] * num;
   }, 0);
-  const phraseConsumption = types.every(t => counts[t] === 0)
-    ? 'No has bebido nada aún, pídete algo, anda.'
-    : `Te has bebido ${types.map(t => {
-        const c = counts[t];
-        if (c === 0) return t === 'refresco' ? 'ningún refresco' : `ninguna ${t}`;
-        return `${c} ${t}${c > 1 ? 's' : ''}`;
+  const phraseConsumption = (() => {
+  // Filtrar solo tipos con cantidad > 0
+  const consumedTypes = types.filter(t => counts[t] > 0);
+  if (consumedTypes.length === 0) {
+    return 'No has bebido nada aún, pídete algo, anda.';
+  }
+  // Construir partes según bebidas consumidas
+  const parts = consumedTypes.map(t => {
+    const c = counts[t];
+    const label = `${c} ${t}${c > 1 ? 's' : ''}`;
+    return label;
+  });
+  if (parts.length === 1) {
+    return `Te has bebido ${parts[0]}`;
+  }
+  if (parts.length === 2) {
+    return `Te has bebido ${parts[0]} y ${parts[1]}`;
+  }
+  // Más de dos tipos
+  return `Te has bebido ${parts.slice(0, -1).join(', ')} y ${parts[parts.length - 1]}`;
+})();
       }).join(', ').replace(/, ([^,]*)$/, ' y $1')}`;
 
   return (
