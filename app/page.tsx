@@ -96,7 +96,6 @@ export default function HomePage() {
   }
   return `Te has bebido ${parts.slice(0, -1).join(', ')} y ${parts[parts.length - 1]}`;
 })();
-      }).join(', ').replace(/, ([^,]*)$/, ' y $1')}`;
 
   return (
     <div className="min-h-screen p-6">
