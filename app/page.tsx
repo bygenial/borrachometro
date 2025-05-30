@@ -26,6 +26,23 @@ export default function HomePage() {
     copa: 0,
     refresco: 0,
   });
+  useEffect(() => {
+    const savedCounts = localStorage.getItem('borrachometro_counts');
+    const savedPrices = localStorage.getItem('borrachometro_prices');
+    if (savedCounts) setCounts(JSON.parse(savedCounts));
+    if (savedPrices) setPriceInputs(JSON.parse(savedPrices));
+    const idx = Math.floor(Math.random() * frases.length);
+    setPhrase(frases[idx]);
+  }, []);
+
+  useEffect(() => {
+    localStorage.setItem('borrachometro_counts', JSON.stringify(counts));
+  }, [counts]);
+
+  useEffect(() => {
+    localStorage.setItem('borrachometro_prices', JSON.stringify(priceInputs));
+  }, [priceInputs]);
+  
   const [priceInputs, setPriceInputs] = useState<
     Record<(typeof types)[number], string>
   >({ cerveza: "", copa: "", refresco: "" });
