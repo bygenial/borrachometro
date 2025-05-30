@@ -2,7 +2,8 @@
 'use client';
 import { useEffect, useState } from 'react';
 
-// Frases proverbios sobre beber\const frases = [
+// Frases proverbios sobre beber
+const frases = [
   'A buen vino, no hay buen tino.',
   'A buen vino, no hay mal bebedor.',
   'A la carne, vino; y si es jamón, con más razón.',
@@ -11,13 +12,23 @@ import { useEffect, useState } from 'react';
   'A quien bebe, hablar no se debe.',
   'Aceite y vino, bálsamo divino.',
   'Agua de cepas y orinal te pondrán en el hospital.',
+  'Al hombre viejo, vino nuevo.',
   'Amigo y vino, el más antiguo.',
+  'Andar derecho y mucho beber, no puede ser.',
+  'Baco, Venus y el tabaco, ponen al hombre flaco.',
   'Bebe cada día vino añejo y me agradecerás el consejo.',
+  'Bebe el agua a chorros, y el vino a sorbos.',
+  'Bebe vino cada día, pero nunca en demasía.',
   'Bebe, que te rías del vino, pero déjalo antes de que se ría de ti el vino.',
+  'Beber buen vino no es desatino; lo que es malo es beber vino malo.',
   'Beber con medida alarga la vida.',
+  'Beber hasta caer es de reprender; beber hasta tambalear tampoco es de aprobar; unos traguitos de cuanto en cuanto y vamos andando.',
   'Beber para comer; y aún eso, sin exceso.',
-  'Buen vino y buen pan pregonarán.',
+  'Bebido con buenos amigos, sabe bien cualquier vino.',
+  'Buen vino y buen pan, ellos se pregonarán.',
+  'Buen vino y sopas hervidas le alargan al viejo la vida.',
   'Buen vino cría buena sangre.',
+  'Bebe vino de Jerez y tendrás buena vejez.',
   'Vino y verdad no pueden juntos estar.',
   'Yo te perdono el mal que me haces por lo bien que me sabes.'
 ];
@@ -31,37 +42,30 @@ export default function HomePage() {
     vino:    '🍷',
   };
 
-  // Estado inicial y persistencia
+  // Estados y persistencia
   const [counts, setCounts] = useState<Record<typeof types[number], number>>({ cerveza: 0, copa: 0, refresco: 0, vino: 0 });
   const [priceInputs, setPriceInputs] = useState<Record<typeof types[number], string>>({ cerveza: '', copa: '', refresco: '', vino: '' });
   const [phrase, setPhrase] = useState('');
 
+  // Cargar datos previos y frase
   useEffect(() => {
-    // Frase aleatoria
     const idx = Math.floor(Math.random() * frases.length);
     setPhrase(frases[idx]);
-    // Cargar datos previos
     const savedCounts = localStorage.getItem('borrachometro_counts');
     const savedPrices = localStorage.getItem('borrachometro_prices');
     if (savedCounts) setCounts(JSON.parse(savedCounts));
     if (savedPrices) setPriceInputs(JSON.parse(savedPrices));
   }, []);
 
-  useEffect(() => {
-    localStorage.setItem('borrachometro_counts', JSON.stringify(counts));
-  }, [counts]);
+  // Guardar cambios
+  useEffect(() => { localStorage.setItem('borrachometro_counts', JSON.stringify(counts)); }, [counts]);
+  useEffect(() => { localStorage.setItem('borrachometro_prices', JSON.stringify(priceInputs)); }, [priceInputs]);
 
-  useEffect(() => {
-    localStorage.setItem('borrachometro_prices', JSON.stringify(priceInputs));
-  }, [priceInputs]);
-
-  // Modificadores de estado
-  const increment = (t: typeof types[number]) => setCounts(prev => ({ ...prev, [t]: prev[t] + 1 }));
-  const decrement = (t: typeof types[number]) => setCounts(prev => ({ ...prev, [t]: Math.max(0, prev[t] - 1) }));
-  const handlePriceChange = (t: typeof types[number], value: string) => {
-    if (value === '' || /^[0-9]*[.,]?[0-9]*$/.test(value)) {
-      setPriceInputs(prev => ({ ...prev, [t]: value }));
-    }
+  // Modificadores
+  const increment = (t: typeof types[number]) => setCounts(p => ({ ...p, [t]: p[t] + 1 }));
+  const decrement = (t: typeof types[number]) => setCounts(p => ({ ...p, [t]: Math.max(0, p[t] - 1) }));
+  const handlePriceChange = (t: typeof types[number], v: string) => {
+    if (v === '' || /^[0-9]*[.,]?[0-9]*$/.test(v)) setPriceInputs(p => ({ ...p, [t]: v }));
   };
   const resetAll = () => {
     setCounts({ cerveza: 0, copa: 0, refresco: 0, vino: 0 });
@@ -70,10 +74,10 @@ export default function HomePage() {
     localStorage.removeItem('borrachometro_prices');
   };
 
-  // Cálculos y frase de consumo
-  const totalPrice = types.reduce((sum, t) => {
+  // Cálculos
+  const totalPrice = types.reduce((s, t) => {
     const num = parseFloat(priceInputs[t].replace(',', '.')) || 0;
-    return sum + counts[t] * num;
+    return s + counts[t] * num;
   }, 0);
   const phraseConsumption = types.every(t => counts[t] === 0)
     ? 'No has bebido nada aún, pídete algo, anda.'
