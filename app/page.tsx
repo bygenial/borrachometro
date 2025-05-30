@@ -16,7 +16,6 @@ export default function HomePage() {
     vino:    '🍷',
   };
 
- HEAD
   const [phrase, setPhrase] = useState("");
   const [counts, setCounts] = useState<Record<(typeof types)[number], number>>({
     cerveza: 0,
